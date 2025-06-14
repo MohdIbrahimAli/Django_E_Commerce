@@ -1,277 +1,112 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>{% block title %}E-Commerce Site{% endblock %}</title>
-
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Django E-Commerce{% endblock %}</title>
+    
     <!-- Bootstrap CSS -->
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      rel="stylesheet"
-    />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <!-- Custom CSS -->
-    <link
-      href="{% load static %}{% static 'css/style.css' %}"
-      rel="stylesheet"
-    />
-
-    <!-- SEO Meta Tags -->
-    <meta
-      name="description"
-      content="{% block meta_description %}Your one-stop shop for quality products{% endblock %}"
-    />
-    <meta
-      name="keywords"
-      content="{% block meta_keywords %}ecommerce, shopping, products{% endblock %}"
-    />
-    <meta name="author" content="E-Commerce Site" />
-
-    <!-- Open Graph Meta Tags -->
-    <meta
-      property="og:title"
-      content="{% block og_title %}E-Commerce Site{% endblock %}"
-    />
-    <meta
-      property="og:description"
-      content="{% block og_description %}Your one-stop shop for quality products{% endblock %}"
-    />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="{{ request.build_absolute_uri }}" />
-
-    {% block extra_head %}{% endblock %}
-  </head>
-  <body>
+    <link href="{% load static %}{% static 'css/style.css' %}" rel="stylesheet">
+    {% block extra_css %}{% endblock %}
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% load static %}{% static 'images/favicon.ico' %}">
+</head>
+<body>
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
-      <div class="container">
-        <a class="navbar-brand" href="{% url 'home' %}">
-          <i class="fas fa-store"></i> E-Commerce
-        </a>
-
-        <!-- Mobile menu button -->
-        <button
-          class="navbar-toggler"
-          type="button"
-          data-bs-toggle="collapse"
-          data-bs-target="#navbarNav"
-        >
-          <span class="navbar-toggler-icon"></span>
-        </button>
-
-        <!-- Navigation links -->
-        <div class="collapse navbar-collapse" id="navbarNav">
-          <ul class="navbar-nav me-auto">
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'home' %}">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'products:product_list' %}"
-                >Products</a
-              >
-            </li>
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="categoriesDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-              >
-                Categories
-              </a>
-              <ul class="dropdown-menu">
-                {% for category in categories %}
-                <li>
-                  <a
-                    class="dropdown-item"
-                    href="{% url 'products:category_detail' category.slug %}"
-                    >{{ category.name }}</a
-                  >
-                </li>
-                {% empty %}
-                <li>
-                  <span class="dropdown-item-text"
-                    >No categories available</span
-                  >
-                </li>
-                {% endfor %}
-              </ul>
-            </li>
-          </ul>
-
-          <!-- Search form -->
-          <form
-            class="d-flex me-3 search-form"
-            action="{% url 'products:product_search' %}"
-            method="GET"
-          >
-            <div class="position-relative">
-              <input
-                class="form-control search-input"
-                type="search"
-                name="query"
-                placeholder="Search products..."
-                value="{{ request.GET.query }}"
-              />
-              <div class="search-suggestions"></div>
-            </div>
-            <button class="btn btn-outline-primary ms-2" type="submit">
-              <i class="fas fa-search"></i>
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="{% url 'home' %}">
+                <img src="{% load static %}{% static 'images/logo.png' %}" alt="Logo" height="40" class="d-inline-block align-top me-2">
+                E-Shop
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
             </button>
-          </form>
-
-          <!-- User menu -->
-          <ul class="navbar-nav">
-            <!-- Cart -->
-            <li class="nav-item">
-              <a
-                class="nav-link position-relative cart-icon"
-                href="{% url 'cart:cart_detail' %}"
-              >
-                <i class="fas fa-shopping-cart"></i>
-                <span class="cart-count">{{ cart|length }}</span>
-              </a>
-            </li>
-
-            {% if user.is_authenticated %}
-            <li class="nav-item dropdown">
-              <a
-                class="nav-link dropdown-toggle"
-                href="#"
-                id="userDropdown"
-                role="button"
-                data-bs-toggle="dropdown"
-              >
-                <i class="fas fa-user"></i> {{ user.username }}
-              </a>
-              <ul class="dropdown-menu">
-                <li>
-                  <a class="dropdown-item" href="{% url 'accounts:profile' %}">
-                    <i class="fas fa-user-circle"></i> Profile
-                  </a>
-                </li>
-                <li>
-                  <a class="dropdown-item" href="{% url 'orders:order_list' %}">
-                    <i class="fas fa-box"></i> My Orders
-                  </a>
-                </li>
-                {% if user.is_staff %}
-                <li><hr class="dropdown-divider" /></li>
-                <li>
-                  <a class="dropdown-item" href="/admin/">
-                    <i class="fas fa-cog"></i> Admin Panel
-                  </a>
-                </li>
-                {% endif %}
-                <li><hr class="dropdown-divider" /></li>
-                <li>
-                  <a class="dropdown-item" href="{% url 'accounts:logout' %}">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                  </a>
-                </li>
-              </ul>
-            </li>
-            {% else %}
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'accounts:login' %}">
-                <i class="fas fa-sign-in-alt"></i> Login
-              </a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{% url 'accounts:register' %}">
-                <i class="fas fa-user-plus"></i> Register
-              </a>
-            </li>
-            {% endif %}
-          </ul>
-        </div>
-      </div>
-    </nav>
-
-    <!-- Alert Container -->
-    <div class="alert-container">
-      {% if messages %} {% for message in messages %}
-      <div
-        class="alert alert-{{ message.tags }} alert-dismissible fade show"
-        role="alert"
-      >
-        {{ message }}
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="alert"
-        ></button>
-      </div>
-      {% endfor %} {% endif %}
-    </div>
-
-    <!-- Main Content -->
-    <main>{% block content %} {% endblock %}</main>
-
-    <!-- Footer -->
-    <footer class="footer mt-5">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-3">
-            <h5><i class="fas fa-store"></i> E-Commerce</h5>
-            <p>
-              Your trusted online shopping destination with quality products and
-              excellent service.
-            </p>
-          </div>
-          <div class="col-md-3">
-            <h6>Quick Links</h6>
-            <ul class="list-unstyled">
-              <li><a href="{% url 'home' %}">Home</a></li>
-              <li><a href="{% url 'products:product_list' %}">Products</a></li>
-              <li><a href="#">About Us</a></li>
-              <li><a href="#">Contact</a></li>
-            </ul>
-          </div>
-          <div class="col-md-3">
-            <h6>Customer Service</h6>
-            <ul class="list-unstyled">
-              <li><a href="#">FAQ</a></li>
-              <li><a href="#">Shipping Info</a></li>
-              <li><a href="#">Returns</a></li>
-              <li><a href="#">Support</a></li>
-            </ul>
-          </div>
-          <div class="col-md-3">
-            <h6>Follow Us</h6>
-            <div class="social-links">
-              <a href="#" class="me-3"><i class="fab fa-facebook"></i></a>
-              <a href="#" class="me-3"><i class="fab fa-twitter"></i></a>
-              <a href="#" class="me-3"><i class="fab fa-instagram"></i></a>
-              <a href="#"><i class="fab fa-linkedin"></i></a>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'home' %}">Home</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            Categories
+                        </a>
+                        <ul class="dropdown-menu">
+                            {% for category in categories %}
+                            <li><a class="dropdown-item" href="{% url 'category_detail' category.slug %}">{{ category.name }}</a></li>
+                            {% empty %}
+                            <li><a class="dropdown-item" href="#">No categories yet</a></li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'products' %}">Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'about' %}">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'contact' %}">Contact</a>
+                    </li>
+                </ul>
+                
+                <!-- Search Form -->
+                <form class="d-flex me-3" id="searchForm">
+                    <div class="position-relative">
+                        <input class="form-control" type="search" placeholder="Search products..." id="searchInput">
+                        <div id="searchSuggestions" class="list-group position-absolute w-100" style="display: none; z-index: 1000;"></div>
+                    </div>
+                    <button class="btn btn-outline-primary ms-2" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+                
+                <ul class="navbar-nav">
+                    {% if user.is_authenticated %}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user"></i> {{ user.username }}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="{% url 'profile' %}">Profile</a></li>
+                            <li><a class="dropdown-item" href="{% url 'orders' %}">My Orders</a></li>
+                            <li><a class="dropdown-item" href="{% url 'wishlist' %}">Wishlist</a></li>
+                            {% if user.is_staff %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'admin:index' %}">Admin Panel</a></li>
+                            {% endif %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+                        </ul>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">Login</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'register' %}">Register</a>
+                    </li>
+                    {% endif %}
+                    
+                    <!-- Cart -->
+                    <li class="nav-item">
+                        <a class="nav-link cart-icon" href="{% url 'cart_detail' %}">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-count">{{ cart.get_total_quantity|default:0 }}</span>
+                        </a>
+                    </li>
+                </ul>
             </div>
-          </div>
         </div>
-        <hr />
-        <div class="row">
-          <div class="col-12 text-center">
-            <p>&copy; {% now "Y" %} E-Commerce Site. All rights reserved.</p>
-          </div>
-        </div>
-      </div>
-    </footer>
-
-    <!-- Back to top button -->
-    <button class="back-to-top btn btn-primary">
-      <i class="fas fa-arrow-up"></i>
-    </button>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS -->
-    <script src="{% load static %}{% static 'js/main.js' %}"></script>
-
-    {% block extra_js %}{% endblock %}
-  </body>
-</html>
+    </nav>
+    
+    <!-- Main Content -->
+    <main style="margin-top: 76px;">
+        <!--

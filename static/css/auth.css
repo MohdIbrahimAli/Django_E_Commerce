@@ -1,0 +1,131 @@
+/* Authentication Pages Styles */
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 2rem 0;
+}
+
+.auth-card {
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    padding: 3rem;
+    width: 100%;
+    max-width: 450px;
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-header h2 {
+    color: #333;
+    font-weight: bold;
+    margin-bottom: 0.5rem;
+}
+
+.auth-header p {
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.auth-form .form-group {
+    margin-bottom: 1.5rem;
+}
+
+.auth-form label {
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 0.5rem;
+}
+
+.auth-form .form-control {
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.auth-form .form-control:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.15);
+}
+
+.auth-btn {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-weight: 500;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.auth-links {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #e9ecef;
+}
+
+.auth-links a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+.social-auth {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+.social-auth .btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.btn-google {
+    background-color: #db4437;
+    border-color: #db4437;
+    color: white;
+}
+
+.btn-facebook {
+    background-color: #4267B2;
+    border-color: #4267B2;
+    color: white;
+}
+
+.error-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.error-list li {
+    color: var(--danger-color);
+    font-size: 0.85rem;
+    margin-bottom: 0.25rem;
+}
+
+.password-requirements {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+.password-requirements ul {
+    margin: 0;
+    padding-left: 1rem;
+}
