@@ -1,0 +1,238 @@
+```html {% extends 'base.html' %} {% block title %}Checkout - E-Commerce Store{%
+endblock %} {% block content %}
+<div class="container my-5">
+  <h1>Checkout</h1>
+
+  <div class="row">
+    <div class="col-md-8">
+      <form method="post" id="checkout-form">
+        {% csrf_token %}
+
+        <!-- Billing Information -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>Billing Information</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label
+                    for="{{ form.first_name.id_for_label }}"
+                    class="form-label"
+                    >First Name *</label
+                  >
+                  {{ form.first_name }} {% if form.first_name.errors %}
+                  <div class="text-danger">{{ form.first_name.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label
+                    for="{{ form.last_name.id_for_label }}"
+                    class="form-label"
+                    >Last Name *</label
+                  >
+                  {{ form.last_name }} {% if form.last_name.errors %}
+                  <div class="text-danger">{{ form.last_name.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.email.id_for_label }}" class="form-label"
+                >Email *</label
+              >
+              {{ form.email }} {% if form.email.errors %}
+              <div class="text-danger">{{ form.email.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.phone.id_for_label }}" class="form-label"
+                >Phone Number *</label
+              >
+              {{ form.phone }} {% if form.phone.errors %}
+              <div class="text-danger">{{ form.phone.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.address.id_for_label }}" class="form-label"
+                >Address *</label
+              >
+              {{ form.address }} {% if form.address.errors %}
+              <div class="text-danger">{{ form.address.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="row">
+              <div class="col-md-6">
+                <div class="mb-3">
+                  <label for="{{ form.city.id_for_label }}" class="form-label"
+                    >City *</label
+                  >
+                  {{ form.city }} {% if form.city.errors %}
+                  <div class="text-danger">{{ form.city.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label for="{{ form.state.id_for_label }}" class="form-label"
+                    >State *</label
+                  >
+                  {{ form.state }} {% if form.state.errors %}
+                  <div class="text-danger">{{ form.state.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label
+                    for="{{ form.zip_code.id_for_label }}"
+                    class="form-label"
+                    >ZIP Code *</label
+                  >
+                  {{ form.zip_code }} {% if form.zip_code.errors %}
+                  <div class="text-danger">{{ form.zip_code.errors }}</div>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Payment Method -->
+        <div class="card mb-4">
+          <div class="card-header">
+            <h5>Payment Method</h5>
+          </div>
+          <div class="card-body">
+            <div class="form-check mb-3">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="payment_method"
+                id="stripe"
+                value="stripe"
+                checked
+              />
+              <label class="form-check-label" for="stripe">
+                <i class="fab fa-cc-stripe"></i> Credit/Debit Card (Stripe)
+              </label>
+            </div>
+            <div class="form-check mb-3">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="payment_method"
+                id="razorpay"
+                value="razorpay"
+              />
+              <label class="form-check-label" for="razorpay">
+                <i class="fas fa-credit-card"></i> Razorpay
+              </label>
+            </div>
+            <div class="form-check mb-3">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="payment_method"
+                id="cod"
+                value="cod"
+              />
+              <label class="form-check-label" for="cod">
+                <i class="fas fa-money-bill-wave"></i> Cash on Delivery
+              </label>
+            </div>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5>Order Summary</h5>
+        </div>
+        <div class="card-body">
+          {% for item in cart %}
+          <div class="d-flex justify-content-between mb-2">
+            <span>{{ item.product.name }} x {{ item.quantity }}</span>
+            <span>${{ item.total_price }}</span>
+          </div>
+          {% endfor %}
+
+          <hr />
+          <div class="d-flex justify-content-between mb-2">
+            <span>Subtotal:</span>
+            <span>${{ cart.get_total_price }}</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Shipping:</span>
+            <span>Free</span>
+          </div>
+          <div class="d-flex justify-content-between mb-2">
+            <span>Tax:</span>
+            <span>${{ cart.get_tax_amount }}</span>
+          </div>
+          <hr />
+          <div class="d-flex justify-content-between mb-3">
+            <strong>Total:</strong>
+            <strong>${{ cart.get_final_total }}</strong>
+          </div>
+
+          <button
+            type="submit"
+            form="checkout-form"
+            class="btn btn-primary w-100"
+          >
+            Place Order
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script src="https://js.stripe.com/v3/"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+  // Add payment processing scripts here
+  document
+    .getElementById("checkout-form")
+    .addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      const paymentMethod = document.querySelector(
+        'input[name="payment_method"]:checked'
+      ).value;
+
+      if (paymentMethod === "stripe") {
+        // Handle Stripe payment
+        processStripePayment();
+      } else if (paymentMethod === "razorpay") {
+        // Handle Razorpay payment
+        processRazorpayPayment();
+      } else {
+        // Cash on delivery - submit form normally
+        this.submit();
+      }
+    });
+
+  function processStripePayment() {
+    // Implement Stripe payment processing
+    console.log("Processing Stripe payment...");
+    // This would integrate with your Stripe implementation
+  }
+
+  function processRazorpayPayment() {
+    // Implement Razorpay payment processing
+    console.log("Processing Razorpay payment...");
+    // This would integrate with your Razorpay implementation
+  }
+</script>
+{% endblock %} ```

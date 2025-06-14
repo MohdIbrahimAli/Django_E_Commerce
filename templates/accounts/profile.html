@@ -1,0 +1,92 @@
+```html {% extends 'base.html' %} {% block title %}Profile - E-Commerce Store{%
+endblock %} {% block content %}
+<div class="container my-5">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body text-center">
+          <i class="fas fa-user-circle fa-5x text-muted mb-3"></i>
+          <h5>{{ user.get_full_name|default:user.username }}</h5>
+          <p class="text-muted">{{ user.email }}</p>
+        </div>
+      </div>
+
+      <div class="list-group mt-3">
+        <a
+          href="{% url 'profile' %}"
+          class="list-group-item list-group-item-action active"
+        >
+          <i class="fas fa-user"></i> Profile
+        </a>
+        <a
+          href="{% url 'order_history' %}"
+          class="list-group-item list-group-item-action"
+        >
+          <i class="fas fa-shopping-bag"></i> Order History
+        </a>
+        <a
+          href="{% url 'password_change' %}"
+          class="list-group-item list-group-item-action"
+        >
+          <i class="fas fa-key"></i> Change Password
+        </a>
+      </div>
+    </div>
+
+    <div class="col-md-9">
+      <div class="card">
+        <div class="card-header">
+          <h4>Profile Information</h4>
+        </div>
+        <div class="card-body">
+          <form method="post">
+            {% csrf_token %} html {% if form.non_field_errors %}
+            <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+            {% endif %}
+
+            <div class="mb-3">
+              <label for="{{ form.username.id_for_label }}" class="form-label"
+                >Username</label
+              >
+              {{ form.username }} {% if form.username.errors %}
+              <div class="text-danger">{{ form.username.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3">
+              <label for="{{ form.password.id_for_label }}" class="form-label"
+                >Password</label
+              >
+              {{ form.password }} {% if form.password.errors %}
+              <div class="text-danger">{{ form.password.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="mb-3 form-check">
+              <input
+                type="checkbox"
+                class="form-check-input"
+                id="remember"
+                name="remember"
+              />
+              <label class="form-check-label" for="remember">Remember me</label>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+          </form>
+
+          <div class="text-center mt-3">
+            <p>
+              <a href="{% url 'password_reset' %}">Forgot your password?</a>
+            </p>
+            <p>
+              Don't have an account?
+              <a href="{% url 'register' %}">Register here</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} ```

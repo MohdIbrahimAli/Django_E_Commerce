@@ -1,0 +1,147 @@
+```html {% extends 'base.html' %} {% block title %}Order History - E-Commerce
+Store{% endblock %} {% block content %}
+<div class="container my-5">
+  <div class="row">
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body text-center">
+          <i class="fas fa-user-circle fa-5x text-muted mb-3"></i>
+          <h5>{{ user.get_full_name|default:user.username }}</h5>
+          <p class="text-muted">{{ user.email }}</p>
+        </div>
+      </div>
+
+      <div class="list-group mt-3">
+        <a
+          href="{% url 'profile' %}"
+          class="list-group-item list-group-item-action"
+        >
+          <i class="fas fa-user"></i> Profile
+        </a>
+        <a
+          href="{% url 'order_history' %}"
+          class="list-group-item list-group-item-action active"
+        >
+          <i class="fas fa-shopping-bag"></i> Order History
+        </a>
+        <a
+          href="{% url 'password_change' %}"
+          class="list-group-item list-group-item-action"
+        >
+          <i class="fas fa-key"></i> Change Password
+        </a>
+      </div>
+    </div>
+
+    <div class="col-md-9">
+      <div class="card">
+        <div class="card-header">
+          <h4>Order History</h4>
+        </div>
+        <div class="card-body">
+          {% if orders %} {% for order in orders %}
+          <div class="card mb-3">
+            <div
+              class="card-header d-flex justify-content-between align-items-center"
+            >
+              <div>
+                <strong>Order #{{ order.id }}</strong>
+                <span class="text-muted"
+                  >- {{ order.created_at|date:"M d, Y" }}</span
+                >
+              </div>
+              <div>
+                <span
+                  class="badge bg-{% if order.status == 'delivered' %}success{% elif order.status == 'shipped' %}info{% elif order.status == 'processing' %}warning{% else %}secondary{% endif %}"
+                >
+                  {{ order.get_status_display }}
+                </span>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-8">
+                  {% for item in order.items.all %}
+                  <div class="d-flex align-items-center mb-2">
+                    {% if item.product.image %}
+                    <img
+                      src="{{ item.product.image.url }}"
+                      class="me-3"
+                      style="width: 50px; height: 50px; object-fit: cover"
+                      alt="{{ item.product.name }}"
+                    />
+                    {% endif %}
+                    <div>
+                      <h6 class="mb-0">{{ item.product.name }}</h6>
+                      <small class="text-muted"
+                        >Qty: {{ item.quantity }} × ${{ item.price }}</small
+                      >
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+                <div class="col-md-4 text-end">
+                  <p class="mb-1">
+                    <strong>Total: ${{ order.total_amount }}</strong>
+                  </p>
+                  <a
+                    href="{% url 'order_detail' order.id %}"
+                    class="btn btn-sm btn-outline-primary"
+                    >View Details</a
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+
+          <!-- Pagination -->
+          {% if is_paginated %}
+          <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+              {% if page_obj.has_previous %}
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="?page={{ page_obj.previous_page_number }}"
+                  >Previous</a
+                >
+              </li>
+              {% endif %}
+
+              <li class="page-item active">
+                <span class="page-link"
+                  >{{ page_obj.number }} of {{ page_obj.paginator.num_pages
+                  }}</span
+                >
+              </li>
+
+              {% if page_obj.has_next %}
+              <li class="page-item">
+                <a
+                  class="page-link"
+                  href="?page={{ page_obj.next_page_number }}"
+                  >Next</a
+                >
+              </li>
+              {% endif %}
+            </ul>
+          </nav>
+          {% endif %} {% else %}
+          <div class="text-center py-5">
+            <i class="fas fa-shopping-bag fa-3x text-muted mb-3"></i>
+            <h5>No orders yet</h5>
+            <p class="text-muted">
+              When you place your first order, it will appear here.
+            </p>
+            <a href="{% url 'product_list' %}" class="btn btn-primary"
+              >Start Shopping</a
+            >
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} ```
